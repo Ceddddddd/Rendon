@@ -1,0 +1,93 @@
+CREATE DATABASE Almagro;
+GO
+
+USE Almagro;
+GO
+create database Rendon
+
+
+-- Create the Category table
+CREATE TABLE Category (
+    category_id INT PRIMARY KEY,
+    category_name VARCHAR(255) NOT NULL
+);
+
+-- Create the Writing Instruments table
+CREATE TABLE WritingInstruments (
+    writing_instrument_id INT PRIMARY KEY,
+    item_name VARCHAR(255) NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    category_id INT,
+    FOREIGN KEY (category_id) REFERENCES Category(category_id)
+);
+
+-- Create the Notebooks and Paper table
+CREATE TABLE NotebooksAndPaper (
+    notebook_paper_id INT PRIMARY KEY,
+    item_name VARCHAR(255) NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    category_id INT,
+    FOREIGN KEY (category_id) REFERENCES Category(category_id)
+);
+
+-- Create the Arts and Crafts Supplies table
+CREATE TABLE ArtsAndCraftsSupplies (
+    arts_crafts_id INT PRIMARY KEY,
+    item_name VARCHAR(255) NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    category_id INT,
+    FOREIGN KEY (category_id) REFERENCES Category(category_id)
+);
+
+select * from Category
+delete from Category where category_id = 3
+insert into Category values (3,' Arts And Crafts Supplies')
+
+select * from Category
+select * from WritingInstruments
+select * from NotebooksAndPaper
+select * from ArtsAndCraftsSupplies
+
+SELECT 
+    category_id,
+    category_name,
+    SUM(quantity) AS total_quantity,
+    SUM(quantity * price) AS total_price
+FROM (
+    SELECT 
+        Category.category_id,
+        category_name,
+        quantity,
+        price
+    FROM WritingInstruments
+    INNER JOIN Category ON WritingInstruments.category_id = Category.category_id
+
+    UNION ALL
+
+    SELECT 
+        Category.category_id,
+        category_name,
+        quantity,
+        price
+    FROM NotebooksAndPaper
+    INNER JOIN Category ON NotebooksAndPaper.category_id = Category.category_id
+
+    UNION ALL
+
+    SELECT 
+        Category.category_id,
+        category_name,
+        quantity,
+        price
+    FROM ArtsAndCraftsSupplies
+    INNER JOIN Category ON ArtsAndCraftsSupplies.category_id = Category.category_id
+) AS combined_data
+GROUP BY category_id, category_name;
+
+
+
+	
+
